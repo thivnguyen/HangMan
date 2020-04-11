@@ -14,9 +14,9 @@ int main(void) {
                                 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
                                 'V', 'W', 'X', 'Y', 'Z'};
     int alphabetGuesses[ALPHASIZE] = {0};
-
+    char guess;
     printInstructions();
-    countGuess(alphabet, alphabetGuesses, 'c');
+    countGuess(alphabet, alphabetGuesses, guess);
 
 }
 
