@@ -15,6 +15,7 @@ void printInstructions();
 bool countGuess(const char alph[], int alphGuess[], char letter);
 
 int readWords(FILE *filePtr, char storeWords [][MAXWORDLENGTH]);
+
 void drawFigure(int i);
 void drawHead(char figure[][8]);
 void drawBody(char figure[][8]);

@@ -23,11 +23,16 @@ int main(void) {
     int numWords = readWords (filePtr, allWords); //read words from the file
     fclose(filePtr);
 
+    //choose random word
     srand (time(NULL));
-    int wordChosen = rand() % (numWords + 1); //choose a word at random
+    int wordChosenI = rand() % (numWords + 1); //choose a word at random
 
-    char *word = allWords[wordChosen];
-    drawFigure(6);
+    //copy word into a separate array
+    char *wordChosen = allWords[wordChosenI];
+    int lengthOfWord = strlen(wordChosen);
+    char word [lengthOfWord+1]; //word will be stored with a '\0' @ the end
+    strcpy(word, wordChosen);
+
     return 0;
 }
 
@@ -38,7 +43,7 @@ void printInstructions()
     char howToPlay[] = "How To Play:";
     char instr1[] = "1. A word as been randomly chosen, and you must guess the word to win the game!";
     char instr2[] = "2. Enter one character at a time to guess the word.";
-    char instr3[] = "3. For each incorrect guess, a part of the hangman will appear. You get a maximum of n incorrect gueses";
+    char instr3[] = "3. For each incorrect guess, a part of the hangman will appear. You get a maximum of 6 incorrect gueses";
     char instr4[] = "4. For each correct guess, the chosen letter will appear in its designated place(s) in the word.";
     char instr5[] = "5. Each character in the word has been indicated by a \"_\" ";
     char instr6[] = "6. The game has begun. Start guessing and good luck!";
@@ -187,3 +192,4 @@ void printFigure(char figure[][8]){
         printf ("%s\n",(figure[i]));
     }
 }
+
