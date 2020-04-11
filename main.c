@@ -5,10 +5,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#define ALPHASIZE 26
-
-void printInstructions();
-bool countGuess(const char alph[], int alphGuess[], char letter);
 
 int main(void) {
 
