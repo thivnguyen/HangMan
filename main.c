@@ -72,7 +72,7 @@ char* enterGuess(char *chosenWord)
     //loop through the word to search for character guessed
     /*  for(int i =0; i < lengthOfWord; ++i)
       {
-        if (wordChosen[i] == characterGuess)
+        if (chosenWord[i] == characterGuess)
         {
 	        guesses[i] = 1; place a 1 in the index of the guesses[] based on where the character is located in the word
         }
