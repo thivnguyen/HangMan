@@ -52,6 +52,33 @@ void printInstructions()
 
 }
 
+// Ask user to enter a letter and loop through the word to search for character guessed 
+char* enterGuess(char *chosenWord)
+ {  
+    char characterGuess;
+    int lengthOfWord = strlen(chosenWord);
+    int count = 0; // initialize number of guesses made
+
+    while(count < 6) // change 6 to a constant later
+    {
+      printf("Enter a letter from the alphabet: \n");
+      scanf(" %c", &characterGuess);
+      count++;
+    }
+    if (count == 6)
+    {
+      printf("You're out of guesses. \n");
+    }
+    //loop through the word to search for character guessed
+    /*  for(int i =0; i < lengthOfWord; ++i)
+      {
+        if (wordChosen[i] == characterGuess)
+        {
+	        guesses[i] = 1; place a 1 in the index of the guesses[] based on where the character is located in the word
+        }
+      }*/
+ }
+
 // Keep track of guesses
 bool countGuess(const char alph[], int alphGuess[], char letter)
 {
