@@ -53,7 +53,7 @@ void printInstructions()
 }
 
 // Ask user to enter a letter and loop through the word to search for character guessed 
-char* enterGuess(char *chosenWord)
+char enterGuess(char *chosenWord)
  {  
     char characterGuess;
     int lengthOfWord = strlen(chosenWord);
