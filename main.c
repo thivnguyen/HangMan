@@ -12,10 +12,6 @@ int main(void) {
                                 'H', 'I', 'J', 'K', 'L', 'M', 'N',
                                 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
                                 'V', 'W', 'X', 'Y', 'Z'};
-    int alphabetGuesses[ALPHASIZE] = {0};
-    char guess;
-    printInstructions();
-    countGuess(alphabet, alphabetGuesses, guess);
 
     //point to file
     FILE *filePtr = fopen("Words.txt", "r");
@@ -23,15 +19,62 @@ int main(void) {
     int numWords = readWords (filePtr, allWords); //read words from the file
     fclose(filePtr);
 
-    //choose random word
-    srand (time(NULL));
-    int wordChosenI = rand() % (numWords + 1); //choose a word at random
+    bool done = false; //done with game
 
-    //copy word into a separate array
-    char *wordChosen = allWords[wordChosenI];
-    int lengthOfWord = strlen(wordChosen);
-    char word [lengthOfWord+1]; //word will be stored with a '\0' @ the end
-    strcpy(word, wordChosen);
+    // Game starts here
+    while (done == false)
+    {
+        //choose random word
+        srand (time(NULL));
+        int wordChosenI = rand() % (numWords + 1); //choose a word at random
+
+        //copy word into a separate array
+        char *wordChosen = allWords[wordChosenI];
+        int lengthOfWord = strlen(wordChosen);
+        char word [lengthOfWord+1]; //word will be stored with a '\0' @ the end
+        strcpy(word, wordChosen);
+        //int guesses[lengthOfWord] = {0}; 
+
+        printInstructions();
+
+        int incorrectGuesses = 0;
+
+        // User starts guessing
+        while (incorrectGuesses < 6) // Add || (smth to indicate all letters guessed)
+        {
+            int alphabetGuesses[ALPHASIZE] = {0};
+            char guess;
+
+            // Ask for user input 
+
+            // Save user input into guess
+
+            countGuess(alphabet, alphabetGuesses, guess);
+
+            // enterGuess()
+
+            // drawFigure()
+
+            // printCurrentStatus(word, guesses, lengthOfWord);
+
+            // displayNumberOfLives()
+        }
+        
+        // printResults()
+
+        puts("Enter 'Y' if you would like to play again");
+        char play;
+        scanf("%c", play);
+        if (anotherGame(play) == true)
+        {
+            puts("You have chosen to play another game.");
+        }
+        else
+        {
+            done = true;
+            puts("Bye!");
+        }
+    }
 
     return 0;
 }
@@ -218,3 +261,33 @@ void printFigure(char figure[][8]){
     }
 }
 
+void printCurrentStatus(char word[], char guesses[], int wordLength)
+{
+    int j = 0; // count correctly guessed letters
+    for (int i = 0; i < wordLength; i++)
+    {
+        if (guesses[i] == 1)
+        {
+            printf("%c", word[i]);
+        }
+        else
+        {
+            printf("%s", "_");
+        }
+        
+    }
+    
+}
+
+// Returns true if wants to play again
+bool anotherGame(char input)
+{
+    if (input == 'y' || input == 'Y') // User enters 'y' or 'Y'
+    {
+        return true;
+    }
+    else // User enters any other character
+    {
+        return false;
+    }   
+}
