@@ -25,4 +25,7 @@ void drawLeftLeg(char figure[][8]);
 void drawRightLeg(char figure[][8]);
 void printFigure(char figure[][8]);
 
+void printCurrentStatus(char word[], char guesses[], int wordLength);
+bool anotherGame(char input);
+
 #endif //UNTITLED_HANGMAN_H
