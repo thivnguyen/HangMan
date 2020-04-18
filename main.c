@@ -64,13 +64,15 @@ int main(void) {
                 drawFigure (incorrectGuesses);
 
                 // printCurrentStatus(word, guesses, lengthOfWord);
+		
+		//printGuesses(lettersGuessed);
 
                 // displayNumberOfLives()
 		displayNumberOfLives(incorrectGuesses);
             }
 
             // printResults()
-	    printResults(alphabetGuesses, int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
+	    printResults(alphabetGuesses, int wordLength, int correctGuesses, int incorrectGuesses, char *chosenWord)
 
             puts("Enter 'Y' if you would like to play again");
             char play;
