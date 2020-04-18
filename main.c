@@ -289,7 +289,16 @@ void printCurrentStatus(char word[], char guesses[], int wordLength)
     }
     
 }
-// Prints “You win/lose” statements with number of correct and incorrect guesses
+
+// Print how many guesses user has left
+void displayNumberOfLives(int wrongGuesses)
+{
+	int maxNumberOfLives = 6;
+	int currentNumberOfLives = maxNumberOfLives - wrongGuesses;
+	printf("\nYou have %d guesses left\n", currentNumberOfLives);
+}
+
+// Print “You win/lose” statements with number of correct and incorrect guesses
 void printResults(char guesses[], int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
 {
 	int countOnes = 0;
