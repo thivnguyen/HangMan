@@ -40,8 +40,11 @@ int main(void) {
             //int guesses[lengthOfWord] = {0};
 
             printInstructions();
-
+		
             int incorrectGuesses = 0;
+	    int correctGuesses = 0;
+	    char lettersGuessed[ALPHASIZE]; // array to keep track of guesses user already made
+	    int start = -1; // beginning of letters guessed array;
 
             // User starts guessing
             while (incorrectGuesses < 6) // Add || (smth to indicate all letters guessed)
@@ -63,9 +66,11 @@ int main(void) {
                 // printCurrentStatus(word, guesses, lengthOfWord);
 
                 // displayNumberOfLives()
+		displayNumberOfLives(incorrectGuesses);
             }
 
             // printResults()
+	    printResults(alphabetGuesses, int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
 
             puts("Enter 'Y' if you would like to play again");
             char play;
@@ -98,27 +103,46 @@ void printInstructions()
 }
 
 // Ask user to enter a letter and loop through the word to search for character guessed 
-char enterGuess( char *chosenWord, int incorrectGuesses, int lengthOfWord)
-{ 
-   char characterGuess;
+char enterGuess(char *chosenWord, int rightGuesses, int wrongGuesses, int wordLength, int alphGuess[], 
+		char guessesMade[], int top)
+{
+	char characterGuess;
+	bool found = false;
  
-   while(incorrectGuesses < 6) // change 6 to constant MAX_INCORRECT_GUESSES later
-   {
-     printf("Enter a letter from the alphabet: \n"); // prompt
-     scanf(" %c", &characterGuess); // read character
-   }
-   if (incorrectGuesses == 6)
-   {
-     printf("You're out of guesses. \n");
-   }
-   //loop through the word to search for character guessed
-   /*  for(int i =0; i < lengthOfWord; ++i)
-     {
-       if (chosenWord[i] == characterGuess)
-       {
-          guesses[i] = 1; Place a 1 in the index of the guesses[] based on where char is located in word
-       }
-     }*/
+  	printf("Enter a letter from the alphabet: \n"); // prompt
+  	scanf(" %c", &characterGuess); // read character
+
+  	//loop through the word to search for character guessed
+   	for(int i = 0; i < wordLength; ++i)
+   	{
+	   if (chosenWord[i] == characterGuess)
+	   {
+		   found = true;
+		   alphGuess[i] = 1; /*Place a 1 in the index of the alphGuess[]
+		   				based on where char is located in word*/
+	   }
+   	}
+
+	if (found == true)// if guess is correct increment rightGuesses
+  	{
+		rightGuesses++;
+  	}
+  	else // else increment wrongGuesses
+  	{
+		wrongGuesses++;
+  	}
+
+  	top++; // increment to next position for guesses made array
+  	for (int k = 0; k < ALPHASIZE; k++)
+  	{
+		guessesMade[top] == characterGuess; // copy guess into guessedMade array 
+  	}
+ 
+   	if (wrongGuesses == 6)
+   	{
+     		printf("You're out of guesses. \n");
+   	}
+ 
 }
 
 
@@ -290,6 +314,19 @@ void printCurrentStatus(char word[], char guesses[], int wordLength)
     
 }
 
+// Print letters user guessed using letters guessed array
+void printGuesses(char guessesMade[])
+{
+	size_t n = sizeof(guessesMade)/sizeof(guessesMade[0]);
+	printf(“The guesses you’ve made: \n“)
+	
+	for (size_t i = 0; i < n && i != ‘\0’; ++i)
+	{
+		printf(“%c ”, guessesMade[i];
+	}
+}
+
+
 // Print how many guesses user has left
 void displayNumberOfLives(int wrongGuesses)
 {
@@ -302,28 +339,28 @@ void displayNumberOfLives(int wrongGuesses)
 void printResults(char guesses[], int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
 {
 	int countOnes = 0;
-    for(int i = 0; i < wordLength; ++i)
+    	for(int i = 0; i < wordLength; ++i)
   	{
-       	if (guesses[i] == 1)
+       		if (guesses[i] == 1)
 		{
 			countOnes++; // counts number of elements with the value 1
-      	}
-    }
-    if(countOnes == wordLength ) // checks if the number of 1’s is equal to length of the word
-    {
-        printf("You win!\n"
-        "Number of correct guesses: %d\n"
-        "Number of incorrect guesses: %d\n",
-        rightGuesses, wrongGuesses); 
-    }
+      		}
+    	}
+    	if(countOnes == wordLength ) // checks if the number of 1’s is equal to length of the word
+    	{
+        	printf("You win!\n"
+        	"Number of correct guesses: %d\n"
+        	"Number of incorrect guesses: %d\n",
+        	rightGuesses, wrongGuesses); 
+    	}
 
  	else 
-    { 
-        printf("You lose! The word was %s\n"
- 	    "Number of correct guesses: %d\n" 
-        "Number of incorrect guesses: %d\n",
-        chosenWord, rightGuesses, wrongGuesses);
-    }
+    	{ 
+        	printf("You lose! The word was %s\n"
+ 	    	"Number of correct guesses: %d\n" 
+        	"Number of incorrect guesses: %d\n",
+        	chosenWord, rightGuesses, wrongGuesses);
+    	}
 }
 
 // Returns true if wants to play again
