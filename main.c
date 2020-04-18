@@ -15,67 +15,69 @@ int main(void) {
 
     //point to file
     FILE *filePtr = fopen("Words.txt", "r");
-    char allWords[MAXWORDS][MAXWORDLENGTH]; //every row makes 1 string
-    int numWords = readWords (filePtr, allWords); //read words from the file
-    fclose(filePtr);
 
-    bool done = false; //done with game
+    if (filePtr == NULL){
+        puts ("Error opening file");
+    }
+    else {
+        char allWords[MAXWORDS][MAXWORDLENGTH]; //every row makes 1 string
+        int numWords = readWords(filePtr, allWords); //read words from the file
+        fclose(filePtr);
 
-    // Game starts here
-    while (done == false)
-    {
-        //choose random word
-        srand (time(NULL));
-        int wordChosenI = rand() % (numWords + 1); //choose a word at random
+        bool done = false; //done with game
 
-        //copy word into a separate array
-        char *wordChosen = allWords[wordChosenI];
-        int lengthOfWord = strlen(wordChosen);
-        char word [lengthOfWord+1]; //word will be stored with a '\0' @ the end
-        strcpy(word, wordChosen);
-        //int guesses[lengthOfWord] = {0}; 
+        // Game starts here
+        while (done == false) {
+            //choose random word
+            srand(time(NULL));
+            int wordChosenI = rand() % (numWords + 1); //choose a word at random
 
-        printInstructions();
+            //copy word into a separate array
+            char *wordChosen = allWords[wordChosenI];
+            int lengthOfWord = strlen(wordChosen);
+            char word[lengthOfWord + 1]; //word will be stored with a '\0' @ the end
+            strcpy(word, wordChosen);
+            //int guesses[lengthOfWord] = {0};
 
-        int incorrectGuesses = 0;
+            printInstructions();
 
-        // User starts guessing
-        while (incorrectGuesses < 6) // Add || (smth to indicate all letters guessed)
-        {
-            int alphabetGuesses[ALPHASIZE] = {0};
-            char guess;
+            int incorrectGuesses = 0;
 
-            // Ask for user input 
+            // User starts guessing
+            while (incorrectGuesses < 6) // Add || (smth to indicate all letters guessed)
+            {
+                int alphabetGuesses[ALPHASIZE] = {0};
+                char guess;
 
-            // Save user input into guess
+                // Ask for user input
 
-            countGuess(alphabet, alphabetGuesses, guess);
+                // Save user input into guess
 
-            // enterGuess()
+                countGuess(alphabet, alphabetGuesses, guess);
 
-            // drawFigure()
+                // enterGuess()
 
-            // printCurrentStatus(word, guesses, lengthOfWord);
+                // drawFigure()
+                drawFigure (incorrectGuesses);
 
-            // displayNumberOfLives()
-        }
-        
-        // printResults()
+                // printCurrentStatus(word, guesses, lengthOfWord);
 
-        puts("Enter 'Y' if you would like to play again");
-        char play;
-        scanf("%c", play);
-        if (anotherGame(play) == true)
-        {
-            puts("You have chosen to play another game.");
-        }
-        else
-        {
-            done = true;
-            puts("Bye!");
+                // displayNumberOfLives()
+            }
+
+            // printResults()
+
+            puts("Enter 'Y' if you would like to play again");
+            char play;
+            scanf("%c", play);
+            if (anotherGame(play) == true) {
+                puts("You have chosen to play another game.");
+            } else {
+                done = true;
+                puts("Bye!");
+            }
         }
     }
-
     return 0;
 }
 
@@ -180,8 +182,14 @@ int readWords(FILE *filePtr, char storeWords [][MAXWORDLENGTH]) {
  */
 
 void drawFigure(int numWrongGuesses){
+
+    //initially, when numWrongGuesses = 0, only draw stick
     char figure [8][8]= {  {" _____"},{" |   |"},{" |     "}, {" |     "}, {" |     "},{" |     "},{" |     "},{"---"}};
     switch (numWrongGuesses){
+        //0 = print without figure
+        case 0:
+            break;
+
         //1 = head
         case 1:
             drawHead(figure);
@@ -225,6 +233,9 @@ void drawFigure(int numWrongGuesses){
             drawLeftLeg(figure);
             drawRightLeg(figure);
             break;
+
+        default:
+            puts ("Incorrect argument");
     }
 
     printFigure(figure);
