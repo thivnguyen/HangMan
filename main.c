@@ -289,6 +289,33 @@ void printCurrentStatus(char word[], char guesses[], int wordLength)
     }
     
 }
+// Prints “You win/lose” statements with number of correct and incorrect guesses
+void printResults(char guesses[], int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
+{
+	int countOnes = 0;
+    for(int i = 0; i < wordLength; ++i)
+  	{
+       	if (guesses[i] == 1)
+		{
+			countOnes++; // counts number of elements with the value 1
+      	}
+    }
+    if(countOnes == wordLength ) // checks if the number of 1’s is equal to length of the word
+    {
+        printf("You win!\n"
+        "Number of correct guesses: %d\n"
+        "Number of incorrect guesses: %d\n",
+        rightGuesses, wrongGuesses); 
+    }
+
+ 	else 
+    { 
+        printf("You lose! The word was %s\n"
+ 	    "Number of correct guesses: %d\n" 
+        "Number of incorrect guesses: %d\n",
+        chosenWord, rightGuesses, wrongGuesses);
+    }
+}
 
 // Returns true if wants to play again
 bool anotherGame(char input)
