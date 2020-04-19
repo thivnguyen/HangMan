@@ -1,17 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include "hangman.h"
-#include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
+
+const char alphabet[ALPHASIZE] = {'A', 'B', 'C', 'D', 'E', 'F', 'G',
+                                  'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                                  'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                                  'V', 'W', 'X', 'Y', 'Z'};
 
 int main(void) {
-
-    const char alphabet[ALPHASIZE] = {'A', 'B', 'C', 'D', 'E', 'F', 'G',
-                                'H', 'I', 'J', 'K', 'L', 'M', 'N',
-                                'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-                                'V', 'W', 'X', 'Y', 'Z'};
 
     //point to file
     FILE *filePtr = fopen("Words.txt", "r");
@@ -21,7 +15,7 @@ int main(void) {
     }
     else {
         char allWords[MAXWORDS][MAXWORDLENGTH]; //every row makes 1 string
-        int numWords = readWords(filePtr, allWords); //read words from the file
+        int lastWordInd = readWords(filePtr, allWords); //read words from the file
         fclose(filePtr);
 
         bool done = false; //done with game
@@ -30,53 +24,71 @@ int main(void) {
         while (done == false) {
             //choose random word
             srand(time(NULL));
-            int wordChosenI = rand() % (numWords + 1); //choose a word at random
+            int wordChosenI = rand() % (lastWordInd + 1); //choose a word at random
 
             //copy word into a separate array
             char *wordChosen = allWords[wordChosenI];
             int lengthOfWord = strlen(wordChosen);
             char word[lengthOfWord + 1]; //word will be stored with a '\0' @ the end
             strcpy(word, wordChosen);
-            //int guesses[lengthOfWord] = {0};
+            int guesses[lengthOfWord]; //keeps tracks of which characters has been guess correctly
+
+            //initialize guesses array to 0
+            for (int i = 0; i < lengthOfWord; i++){
+                guesses [i] = 0;
+            }
 
             printInstructions();
-		
+
             int incorrectGuesses = 0;
-	    int correctGuesses = 0;
-	    char lettersGuessed[ALPHASIZE]; // array to keep track of guesses user already made
-	    int start = -1; // beginning of letters guessed array;
+	        int correctGuesses = 0;
+	        char lettersGuessed[ALPHASIZE] = {0}; // array to keep track of guesses user already made
+	        int lettersGuessedInd = -1; // beginning of letters guessed array;
+
+	        drawFigure(incorrectGuesses);
+            printCurrentStatus(word, guesses,lengthOfWord);
+            int alphabetGuesses[ALPHASIZE] = {0};
 
             // User starts guessing
-            while (incorrectGuesses < 6) // Add || (smth to indicate all letters guessed)
+            while (incorrectGuesses < 6 && correctGuesses < lengthOfWord)
             {
-                int alphabetGuesses[ALPHASIZE] = {0};
-                char guess;
 
                 // Ask for user input
+                char userGuess = enterGuess(alphabetGuesses);
 
-                // Save user input into guess
+                //check whether character exist or not and increment correct/incorrect guesses accordingly
+                bool correctGuess = checkGuesses (word, &correctGuesses, &incorrectGuesses, lengthOfWord, guesses,
+                                   lettersGuessed, &lettersGuessedInd, userGuess);
 
-                countGuess(alphabet, alphabetGuesses, guess);
-
-                // enterGuess()
+                if (correctGuess){
+                    puts ("Yay! Your guess is correct!");
+                }
+                else{
+                    puts ("Incorrect guess. You lost 1 life :(");
+                }
 
                 // drawFigure()
                 drawFigure (incorrectGuesses);
 
                 // printCurrentStatus(word, guesses, lengthOfWord);
-		
-		//printGuesses(lettersGuessed);
+                //print _ for letters that are not guessed yet and the char for characters guessed correctly
+                printCurrentStatus(word, guesses,lengthOfWord);
+
+                //printGuesses(lettersGuessed);
+                //print characters user have already guessed
+                printGuesses(lettersGuessed);
 
                 // displayNumberOfLives()
-		displayNumberOfLives(incorrectGuesses);
+                //display number of lives left
+		        displayNumberOfLives(incorrectGuesses);
             }
 
             // printResults()
-	    printResults(alphabetGuesses, int wordLength, int correctGuesses, int incorrectGuesses, char *chosenWord)
+            printResults(lettersGuessed, lengthOfWord, correctGuesses, incorrectGuesses, word);
 
             puts("Enter 'Y' if you would like to play again");
             char play;
-            scanf("%c", play);
+            scanf(" %c", &play);
             if (anotherGame(play) == true) {
                 puts("You have chosen to play another game.");
             } else {
@@ -104,15 +116,30 @@ void printInstructions()
 
 }
 
-// Ask user to enter a letter and loop through the word to search for character guessed 
-char enterGuess(char *chosenWord, int rightGuesses, int wrongGuesses, int wordLength, int alphGuess[], 
-		char guessesMade[], int top)
-{
-	char characterGuess;
-	bool found = false;
- 
-  	printf("Enter a letter from the alphabet: \n"); // prompt
-  	scanf(" %c", &characterGuess); // read character
+// Ask user to enter a letter and loop through the word to search for character guessed
+//return true if guess is correct
+char enterGuess(char alphabetGuesses[]) {
+    char characterGuess;
+
+    printf("Enter a letter from the alphabet: \n"); // prompt
+    scanf(" %c", &characterGuess); // read character
+
+    bool charAlrGuessed = guessedAlr(alphabet, alphabetGuesses, characterGuess);
+    while (charAlrGuessed){
+        puts ("You already guessed this. Please guess again.");
+        printf("Enter a letter from the alphabet: \n"); // prompt
+        scanf(" %c", &characterGuess); // read character
+
+        charAlrGuessed = guessedAlr(alphabet, alphabetGuesses, characterGuess);
+    }
+
+    return characterGuess;
+}
+
+bool checkGuesses (char chosenWord[], int *rightGuesses, int *wrongGuesses, int wordLength, int wordGuesses[],
+                   char guessesMade[], int *top, char characterGuess){
+
+    bool found = false;
 
   	//loop through the word to search for character guessed
    	for(int i = 0; i < wordLength; ++i)
@@ -120,36 +147,38 @@ char enterGuess(char *chosenWord, int rightGuesses, int wrongGuesses, int wordLe
 	   if (chosenWord[i] == characterGuess)
 	   {
 		   found = true;
-		   alphGuess[i] = 1; /*Place a 1 in the index of the alphGuess[]
+           wordGuesses[i] = 1; /*Place a 1 in the index of the wordGuesses[]
 		   				based on where char is located in word*/
 	   }
    	}
 
-	if (found == true)// if guess is correct increment rightGuesses
+	if (found)// if guess is correct increment rightGuesses
   	{
-		rightGuesses++;
+        *rightGuesses = *rightGuesses + 1;
   	}
   	else // else increment wrongGuesses
   	{
-		wrongGuesses++;
+		*wrongGuesses = *wrongGuesses + 1;
   	}
 
-  	top++; // increment to next position for guesses made array
-  	for (int k = 0; k < ALPHASIZE; k++)
-  	{
-		guessesMade[top] == characterGuess; // copy guess into guessedMade array 
-  	}
+  	*top = *top + 1; // increment to next position for guesses made array
+
+  	guessesMade[*top] = characterGuess; // copy guess into guessedMade array
+
  
    	if (wrongGuesses == 6)
    	{
      		printf("You're out of guesses. \n");
    	}
+
+   	return found;
  
 }
 
 
 // Keep track of guesses
-bool countGuess(const char alph[], int alphGuess[], char letter)
+// return true if letter has been guessed before
+bool guessedAlr(const char alph[], int alphGuess[], char letter)
 {
     letter = toupper(letter);   // Change letter to uppercase
     int i = 0;                  // Initialize counter
@@ -185,7 +214,7 @@ int readWords(FILE *filePtr, char storeWords [][MAXWORDLENGTH]) {
     }
 
     fclose(filePtr);
-    return counter + 1; //index of last word
+    return counter - 1; //index of last word
 }
 
 /*
@@ -223,6 +252,7 @@ void drawFigure(int numWrongGuesses){
 
             //2 = body
         case 2:
+            drawHead(figure);
             drawBody(figure);
             break;
 
@@ -298,21 +328,23 @@ void printFigure(char figure[][8]){
     }
 }
 
-void printCurrentStatus(char word[], char guesses[], int wordLength)
+void printCurrentStatus(char word[], int guesses[], int wordLength)
 {
-    int j = 0; // count correctly guessed letters
+    //int j = 0; // count correctly guessed letters
     for (int i = 0; i < wordLength; i++)
     {
         if (guesses[i] == 1)
         {
             printf("%c", word[i]);
+            printf (" ");
         }
         else
         {
-            printf("%s", "_");
+            printf("%s", "_ ");
         }
         
     }
+    puts(" ");
     
 }
 
@@ -320,11 +352,11 @@ void printCurrentStatus(char word[], char guesses[], int wordLength)
 void printGuesses(char guessesMade[])
 {
 	size_t n = sizeof(guessesMade)/sizeof(guessesMade[0]);
-	printf(“The guesses you’ve made: \n“)
+	printf("The guesses you’ve made: \n");
 	
-	for (size_t i = 0; i < n && i != ‘\0’; ++i)
+	for (size_t i = 0; i < n && guessesMade[i] != '\0'; ++i)
 	{
-		printf(“%c ”, guessesMade[i];
+		printf("%c ", guessesMade[i]);
 	}
 }
 
@@ -334,11 +366,11 @@ void displayNumberOfLives(int wrongGuesses)
 {
 	int maxNumberOfLives = 6;
 	int currentNumberOfLives = maxNumberOfLives - wrongGuesses;
-	printf("\nYou have %d guesses left\n", currentNumberOfLives);
+	printf("\nYou still have %d lives\n", currentNumberOfLives);
 }
 
 // Print “You win/lose” statements with number of correct and incorrect guesses
-void printResults(char guesses[], int wordLength, int rightGuesses, int wrongGuesses, char *chosenWord)
+void printResults(char guesses[], int wordLength, int *rightGuesses, int *wrongGuesses, char *chosenWord)
 {
 	int countOnes = 0;
     	for(int i = 0; i < wordLength; ++i)
