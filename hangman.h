@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -33,10 +32,10 @@ void drawLeftLeg(char figure[][8]);
 void drawRightLeg(char figure[][8]);
 void printFigure(char figure[][8]);
 
-void printCurrentStatus(char word[], int guesses[], int wordLength);
+bool printCurrentStatus(char word[], int guesses[], int wordLength);
 void printGuesses(char guessesMade[]);
 void displayNumberOfLives(int wrongGuesses);
-void printResults(char guesses[], int wordLength, int *rightGuesses, int *wrongGuesses, char *chosenWord);
+void printResults(int guesses[], int wordLength, int *rightGuesses, int *wrongGuesses, char *chosenWord);
 
 bool anotherGame(char input);
 

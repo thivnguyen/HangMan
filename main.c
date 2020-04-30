@@ -48,9 +48,9 @@ int main(void) {
 	        drawFigure(incorrectGuesses);
             printCurrentStatus(word, guesses,lengthOfWord);
             int alphabetGuesses[ALPHASIZE] = {0};
-
+            bool winner = false;
             // User starts guessing
-            while (incorrectGuesses < 6 && correctGuesses < lengthOfWord)
+            while (incorrectGuesses < 6 && !winner)
             {
 
                 // Ask for user input
@@ -72,19 +72,21 @@ int main(void) {
 
                 // printCurrentStatus(word, guesses, lengthOfWord);
                 //print _ for letters that are not guessed yet and the char for characters guessed correctly
-                printCurrentStatus(word, guesses,lengthOfWord);
+                winner = printCurrentStatus(word, guesses,lengthOfWord);
 
                 //printGuesses(lettersGuessed);
                 //print characters user have already guessed
                 printGuesses(lettersGuessed);
 
-                // displayNumberOfLives()
+                //displayNumberOfLives()
                 //display number of lives left
 		        displayNumberOfLives(incorrectGuesses);
             }
 
+
+
             // printResults()
-            printResults(lettersGuessed, lengthOfWord, correctGuesses, incorrectGuesses, word);
+            printResults(guesses, lengthOfWord, correctGuesses, incorrectGuesses, word);
 
             puts("Enter 'Y' if you would like to play again");
             char play;
@@ -328,13 +330,16 @@ void printFigure(char figure[][8]){
     }
 }
 
-void printCurrentStatus(char word[], int guesses[], int wordLength)
+bool printCurrentStatus(char word[], int guesses[], int wordLength)
 {
+    int counter = 0;
+
     //int j = 0; // count correctly guessed letters
     for (int i = 0; i < wordLength; i++)
     {
         if (guesses[i] == 1)
         {
+            counter++;
             printf("%c", word[i]);
             printf (" ");
         }
@@ -345,6 +350,11 @@ void printCurrentStatus(char word[], int guesses[], int wordLength)
         
     }
     puts(" ");
+
+    if (counter == wordLength){
+        return true;
+    }
+    return false;
     
 }
 
@@ -370,7 +380,7 @@ void displayNumberOfLives(int wrongGuesses)
 }
 
 // Print “You win/lose” statements with number of correct and incorrect guesses
-void printResults(char guesses[], int wordLength, int *rightGuesses, int *wrongGuesses, char *chosenWord)
+void printResults(int guesses[], int wordLength, int *rightGuesses, int *wrongGuesses, char *chosenWord)
 {
 	int countOnes = 0;
     	for(int i = 0; i < wordLength; ++i)

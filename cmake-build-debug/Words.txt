@@ -1,5 +1,5 @@
-banana 
-apple 
+banana
+apple
 sandwich
 computer
 skateboard
