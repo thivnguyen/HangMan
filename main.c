@@ -40,8 +40,8 @@ int main(void) {
 
             printInstructions();
 
-            int incorrectGuesses = 0;
-	        int correctGuesses = 0;
+            int incorrectGuesses = 0; // initialize number of incorrect guesses
+	        int correctGuesses = 0; // initialize number of correct guesses
 	        char lettersGuessed[ALPHASIZE] = {0}; // array to keep track of guesses user already made
 	        int lettersGuessedInd = -1; // beginning of letters guessed array;
 
@@ -50,7 +50,8 @@ int main(void) {
             int alphabetGuesses[ALPHASIZE] = {0};
             bool winner = false;
             // User starts guessing
-            while (incorrectGuesses < 6 && !winner)
+            while (incorrectGuesses < 6 && !winner) /* runs as long as number of incorrect guesses is less than 6 and user 
+	    						hasn't won yet*/
             {
 
                 // Ask for user input
