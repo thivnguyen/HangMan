@@ -13,7 +13,6 @@
 #define ALPHASIZE 26
 
 void printInstructions();
-
 int readWords(FILE *filePtr, char storeWords [][MAXWORDLENGTH]);
 
 //functions for user to enter a guess and to check a user guess
@@ -36,7 +35,7 @@ void printFigure(char figure[][8]);
 bool printCurrentStatus(const char word[], const int guesses[], unsigned int wordLength);
 void printGuesses(const char guessesMade[]);
 void displayNumberOfLives(unsigned int wrongGuesses);
-void printResults(const int guesses[], unsigned int wordLength, unsigned int rightGuesses, unsigned int wrongGuesses, char *chosenWord);
+void printResults(const int guesses[],unsigned int wordLength, unsigned int rightGuesses, unsigned int wrongGuesses, char *chosenWord);
 
 bool anotherGame(char input);
 
