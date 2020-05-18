@@ -101,6 +101,7 @@ int main(void) {
                 puts("Enter 'Y' if you would like to play again. 'N' if you don't."); // prompt
                 input = scanf(" %c", &play); // read user's response
 
+                //Makes sure Y, y, N, or n is entered
                 if (play == 78 || play == 89 || play == 110 || play == 121) {
                     legitResponse = true;
                 }
@@ -145,8 +146,8 @@ char enterGuess(int alphabetGuesses[]) {
         printf("Enter a letter from the alphabet: \n"); // prompt
         input = scanf(" %c", &characterGuess); // read character
 
-        //check if character is in range
-        if ((characterGuess >= 65 && characterGuess <= 90) || (characterGuess >= 97 && characterGuess <= 122)) {
+        //check if character is a letter of alphabet
+        if (isalpha(characterGuess)) {
             inRange = true;
         }
     }
@@ -162,8 +163,8 @@ char enterGuess(int alphabetGuesses[]) {
             printf("Enter a letter from the alphabet: \n"); // prompt
             input = scanf(" %c", &characterGuess); // read character
 
-            //check if character is in range
-            if ((characterGuess >= 65 && characterGuess <= 90) || (characterGuess >= 97 && characterGuess <= 122)) {
+            //check if character is a letter of alphabet
+            if (isalpha(characterGuess)) {
                 inRange = true;
             }
         }
@@ -244,7 +245,7 @@ int readWords(FILE *filePtr, char storeWords[][MAXWORDLENGTH]) {
     int counter = 0; //will indicate row word will be stored
 
     while (fgets(singleWord, 45, filePtr)) {
-        sscanf(singleWord, "%21s", storeWords[counter]); //store word into 2D char array
+        sscanf(singleWord, "%20s", storeWords[counter]); //store word into 2D char array
         counter++;
     }
 
