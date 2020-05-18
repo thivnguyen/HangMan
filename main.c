@@ -21,15 +21,30 @@ int main(void) {
     } else {
         char allWords[MAXWORDS][MAXWORDLENGTH]; //every row makes 1 string
         int lastWordInd = readWords(filePtr, allWords); //read words from the file
+        int totalWords = lastWordInd + 1;
         fclose(filePtr);
 
         bool done = false; //done with game
 
+        unsigned int wordsAlrChosen [totalWords];
+
+        //initialize wordsAlrChosen array to 0
+        for (int i = 0; i < totalWords; i++) {
+            wordsAlrChosen[i] = 0;
+        }
+
         // Game starts here
-        while (done == false) {
+        while (done == false && !allWordsUsed(wordsAlrChosen, totalWords)) {
             //choose random word
             srand(time(NULL));
-            unsigned int wordChosenI = rand() % (lastWordInd + 1); //choose a word at random
+            unsigned int wordChosenI = rand() % (totalWords); //choose a word at random
+
+            //make sure that word chosen has not be used in game yet
+            while ( wordsAlrChosen [wordChosenI] == 1){
+                wordChosenI = rand() % (totalWords);
+            }
+
+            wordsAlrChosen[wordChosenI] = 1; //set slot to 1 to indicate that word at slot has been chosen
 
             //copy word into a separate array
             char *wordChosen = allWords[wordChosenI];
@@ -94,29 +109,55 @@ int main(void) {
             // print results
             printResults(guesses, lengthOfWord, correctGuesses, incorrectGuesses, word);
 
-            char play;  // decision on whether or not to play again
-            unsigned int input = 0;
-            bool legitResponse = false;
-            while (input != 1 || !legitResponse) {
-                puts("Enter 'Y' if you would like to play again. 'N' if you don't."); // prompt
-                input = scanf(" %c", &play); // read user's response
+            if (!allWordsUsed(wordsAlrChosen, totalWords)) {
+                char play;  // decision on whether or not to play again
+                unsigned int input = 0;
+                char userInput [50] = {0}; //store entire user input, used for error checking
+                bool legitResponse = false;
 
-                //Makes sure Y, y, N, or n is entered
-                if (play == 78 || play == 89 || play == 110 || play == 121) {
-                    legitResponse = true;
+                while (input != 1 || !legitResponse) {
+                    puts("Enter 'Y' if you would like to play again. 'N' if you don't."); // prompt
+                    input = scanf("%s", userInput); // read user's response
+
+                    if (strlen(userInput) == 1){
+                        play = userInput[0];
+                        //Makes sure Y, y, N, or n is entered
+                        if (play == 78 || play == 89 || play == 110 || play == 121) {
+                            legitResponse = true;
+                        }
+                    }
+                }
+
+                if (anotherGame(play) == true) // user wants to play another game
+                {
+                    puts("You have chosen to play another game.");
+                } else // user does not want to play again
+                {
+                    done = true;
+                    puts("Bye!");
                 }
             }
-            if (anotherGame(play) == true) // user wants to play another game
-            {
-                puts("You have chosen to play another game.");
-            } else // user does not want to play again
-            {
-                done = true;
-                puts("Bye!");
+            else{
+                puts ("You have guessed all the words and have beat the game! Congratulations!");
             }
         }
     }
     return 0;
+}
+
+//read words from text file
+int readWords(FILE *filePtr, char storeWords[][MAXWORDLENGTH]) {
+
+    char singleWord[46]; //stores single word read from file
+    int counter = 0; //will indicate row word will be stored
+
+    while (fgets(singleWord, 45, filePtr)) {
+        sscanf(singleWord, "%20s", storeWords[counter]); //store word into 2D char array
+        counter++;
+    }
+
+    fclose(filePtr); // closes file
+    return counter - 1; //index of last word
 }
 
 // Prints game instructions
@@ -138,34 +179,46 @@ void printInstructions() {
 // Ask user to enter a letter and loop through the word to search for character guessed
 //return true if guess is correct
 char enterGuess(int alphabetGuesses[]) {
+    char userInput [50] = {0};
     char characterGuess;
 
     unsigned int input = 0;
-    bool inRange = false;
-    while (input != 1 || !inRange) {
+    bool isLetter = false;
+    bool oneChar = false; //indicates that only one character is entered
+    while (input != 1 || !isLetter || !oneChar) {
         printf("Enter a letter from the alphabet: \n"); // prompt
-        input = scanf(" %c", &characterGuess); // read character
 
-        //check if character is a letter of alphabet
-        if (isalpha(characterGuess)) {
-            inRange = true;
+        input = scanf ("%50s", userInput); //use %s to make that that entire user input is taken in
+
+        //if user entered a character
+        if (oneChar = (strlen(userInput) == 1)){
+            characterGuess = userInput[0];
+            //check if character is a letter of alphabet
+            if (isalpha(characterGuess)) {
+                isLetter = true;
+            }
         }
     }
 
     bool charAlrGuessed = guessedAlr(alphabet, alphabetGuesses, characterGuess);
     while (charAlrGuessed) {
-        puts("You already guessed this. Please guess again.");
+        printf("You already guessed %c. Please guess again. ", toupper(characterGuess));
 
         input = 0;
-        inRange = false;
-
-        while (input != 1 || !inRange) {
+        isLetter = false;
+        oneChar = false;
+        while (input != 1 || !isLetter || !oneChar) {
             printf("Enter a letter from the alphabet: \n"); // prompt
-            input = scanf(" %c", &characterGuess); // read character
 
-            //check if character is a letter of alphabet
-            if (isalpha(characterGuess)) {
-                inRange = true;
+            input = scanf ("%50s", userInput); //use %s to make that that entire user input is taken in
+
+            //if user entered a character
+            if (oneChar = (strlen(userInput) == 1)){
+                characterGuess = userInput[0];
+                //check if character is a letter of alphabet
+                if (isalpha(characterGuess)) {
+                    isLetter = true;
+                }
             }
         }
 
@@ -187,8 +240,9 @@ checkGuesses(const char chosenWord[], unsigned int *rightGuesses, unsigned int *
         if (chosenWord[i] == characterGuess)// if guess is in the word
         {
             found = true;
-            wordGuesses[i] = 1; /*Place a 1 in the index of the wordGuesses[]
-		   				based on where char is located in word*/
+            //Place a 1 in the index of the wordGuesses[]
+		   	//based on where char is located in word
+            wordGuesses[i] = 1;
         }
     }
 
@@ -236,21 +290,6 @@ bool guessedAlr(const char alph[], int alphGuess[], char letter) {
         i++; // increment
     }
     return guessed;
-}
-
-
-int readWords(FILE *filePtr, char storeWords[][MAXWORDLENGTH]) {
-
-    char singleWord[46]; //stores single word read from file
-    int counter = 0; //will indicate row word will be stored
-
-    while (fgets(singleWord, 45, filePtr)) {
-        sscanf(singleWord, "%20s", storeWords[counter]); //store word into 2D char array
-        counter++;
-    }
-
-    fclose(filePtr); // closes file
-    return counter - 1; //index of last word
 }
 
 /*
@@ -448,4 +487,13 @@ bool anotherGame(char input) {
     {
         return false;
     }
+}
+
+bool allWordsUsed (const unsigned int wordsAlrChosen[], int length){
+    for (int i = 0; i < length; i ++){
+        if (wordsAlrChosen[i] == 0){
+            return false;
+        }
+    }
+    return true;
 }

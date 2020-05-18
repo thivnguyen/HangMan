@@ -38,6 +38,7 @@ void displayNumberOfLives(unsigned int wrongGuesses);
 void printResults(const int guesses[],unsigned int wordLength, unsigned int rightGuesses, unsigned int wrongGuesses, char *chosenWord);
 
 bool anotherGame(char input);
+bool allWordsUsed (const unsigned int wordsAlrChosen[], int length);
 
 
 #endif //UNTITLED_HANGMAN_H
