@@ -156,7 +156,7 @@ int readWords(FILE *filePtr, char storeWords[][MAXWORDLENGTH]) {
     int counter = 0; //will indicate row word will be stored
 
     while (fgets(singleWord, 45, filePtr)) {
-        sscanf(singleWord, "%20s", storeWords[counter]); //store word into 2D char array
+        sscanf(singleWord, "%19s", storeWords[counter]); //store word into 2D char array
         counter++;
     }
 
