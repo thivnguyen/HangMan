@@ -3,6 +3,7 @@
 
 #include "hangman.h"
 #include "drawfigure.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +11,7 @@
 #include <time.h>
 #include <ctype.h>
 
+//array containing alphabet
 const char alphabet[ALPHASIZE] = {'A', 'B', 'C', 'D', 'E', 'F', 'G',
                                   'H', 'I', 'J', 'K', 'L', 'M', 'N',
                                   'O', 'P', 'Q', 'R', 'S', 'T', 'U',
@@ -25,7 +27,7 @@ int main(void) {
     } else {
         char allWords[MAXWORDS][MAXWORDLENGTH]; //every row makes 1 string
         int lastWordInd = readWords(filePtr, allWords); //read words from the file
-        int totalWords = lastWordInd + 1;
+        int totalWords = lastWordInd + 1; //total Wwords read
         fclose(filePtr);
 
         bool done = false; //done with game
@@ -181,7 +183,7 @@ void printInstructions() {
 }
 
 // Ask user to enter a letter and loop through the word to search for character guessed
-//return true if guess is correct
+//return character that users guessed
 char enterGuess(int alphabetGuesses[]) {
     char userInput [50] = {0};
     char characterGuess;
@@ -234,6 +236,7 @@ char enterGuess(int alphabetGuesses[]) {
     return toupper(characterGuess);
 }
 
+//Keeps track of guesses by managing variables for correct and incorrect guesses, arrays for word, and arrays for letters guessed
 bool
 checkGuesses(const char chosenWord[], unsigned int *rightGuesses, unsigned int *wrongGuesses, unsigned int wordLength,
              int wordGuesses[],
@@ -317,6 +320,7 @@ bool guessedAlr(const char alph[], int alphGuess[], char letter) {
  //figure[6] = {'-','-','-',' ',' ',' ','\0'}
  */
 
+//Calls functions to change 2d array for figure based on number of incorrect guesses
 void drawFigure(unsigned int numWrongGuesses) {
 
     //initially, when numWrongGuesses = 0, only draw stick
@@ -385,37 +389,45 @@ void drawFigure(unsigned int numWrongGuesses) {
     printFigure(figure);
 }
 
+//Changes corresponding slot in 2d array for head drawing
 void drawHead(char figure[][8]) {
     figure[2][5] = 'O';
 }
 
+//Changes corresponding slot in 2d array for body drawing
 void drawBody(char figure[][8]) {
     figure[3][5] = '|';
     figure[4][5] = '|';
 }
 
+//Changes corresponding slot in 2d for left arm drawing
 void drawLeftArm(char figure[][8]) {
     figure[3][4] = '\\';
 }
 
+//Changes corresponding slot in 2d for right arm drawing
 void drawRightArm(char figure[][8]) {
     figure[3][6] = '/';
 }
 
+//Changes corresponding slot in 2d for left leg drawing
 void drawLeftLeg(char figure[][8]) {
     figure[5][4] = '/';
 }
 
+//Changes corresponding slot in 2d for right leg drawing
 void drawRightLeg(char figure[][8]) {
     figure[5][6] = '\\';
 }
 
+//Prints figure
 void printFigure(char figure[][8]) {
     for (int i = 0; i < 8; i++) {
         printf("%s\n", (figure[i]));
     }
 }
 
+//Prints current status of word based on correctly guessed letters
 bool printCurrentStatus(const char word[], const int guesses[], unsigned int wordLength) {
     int counter = 0;
 
@@ -495,6 +507,7 @@ bool anotherGame(char input) {
     }
 }
 
+//Determines whether the word chosen from the list of words has already been used in the game before
 bool allWordsUsed (const unsigned int wordsAlrChosen[], int length){
     for (int i = 0; i < length; i ++){
         if (wordsAlrChosen[i] == 0){
