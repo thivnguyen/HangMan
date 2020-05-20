@@ -1,4 +1,8 @@
+// Hangman Game
+// By Thi Nguyen, Lynn Tran, Cathy Vu
+
 #include "hangman.h"
+#include "drawfigure.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -166,7 +170,7 @@ void printInstructions() {
     char howToPlay[] = "How To Play:";
     char instr1[] = "1. A word as been randomly chosen, and you must guess the word to win the game!";
     char instr2[] = "2. Enter one character at a time to guess the word.";
-    char instr3[] = "3. For each incorrect guess, a part of the hangman will appear. You get a maximum of 6 incorrect gueses";
+    char instr3[] = "3. For each incorrect guess, a part of the hangman will appear. You get a maximum of 6 incorrect guesses";
     char instr4[] = "4. For each correct guess, the chosen letter will appear in its designated place(s) in the word.";
     char instr5[] = "5. Each character in the word has been indicated by a \"_\" ";
     char instr6[] = "6. The game has begun. Start guessing and good luck!";
@@ -191,7 +195,8 @@ char enterGuess(int alphabetGuesses[]) {
         input = scanf ("%50s", userInput); //use %s to make that that entire user input is taken in
 
         //if user entered a character
-        if (oneChar = (strlen(userInput) == 1)){
+        oneChar = strlen(userInput) == 1;
+        if (oneChar){
             characterGuess = userInput[0];
             //check if character is a letter of alphabet
             if (isalpha(characterGuess)) {
@@ -213,7 +218,8 @@ char enterGuess(int alphabetGuesses[]) {
             input = scanf ("%50s", userInput); //use %s to make that that entire user input is taken in
 
             //if user entered a character
-            if (oneChar = (strlen(userInput) == 1)){
+            oneChar = strlen(userInput) == 1;
+            if (oneChar){
                 characterGuess = userInput[0];
                 //check if character is a letter of alphabet
                 if (isalpha(characterGuess)) {
@@ -435,10 +441,10 @@ bool printCurrentStatus(const char word[], const int guesses[], unsigned int wor
 
 // Print letters user guessed using letters guessed array
 void printGuesses(const char guessesMade[]) {
-    size_t n = sizeof(guessesMade) / sizeof(guessesMade[0]); // number of guesses made
+
     printf("The guesses you’ve made: \n");
 
-    for (size_t i = 0; i < n && guessesMade[i] != '\0'; ++i) //iterates until the \0 null character is reached
+    for (int i = 0; guessesMade[i] != 0; ++i) //iterates until the \0 null character is reached
     {
         printf("%c ", guessesMade[i]); // print each letter in guessesMade[]
     }
