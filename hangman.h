@@ -1,6 +1,7 @@
 // Hangman.h
 // By Thi Nguyen, Lynn Tran, Cathy Vu
-// Functions to read from File, for user to etner guesses, and for printing results
+// Functions for reading from File, for entering guesses, for printing results, for
+// indicating whether user wants to play again, and for error-checking
 
 
 #ifndef HANGMAN_H

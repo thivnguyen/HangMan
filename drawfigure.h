@@ -1,6 +1,6 @@
 // drawfigure.h
 // By Thi Nguyen, Lynn Tran, Cathy Vu
-// functions to manipulate hangman
+// Functions to manipulate hangman
 
 
 #ifndef DRAWFIGURE_H
